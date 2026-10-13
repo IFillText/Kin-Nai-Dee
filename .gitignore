@@ -1,0 +1,29 @@
+# Python Virtual Environments
+venv/
+env/
+.venv/
+ENV/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# Operating System & IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Large Datasets (>100MB exceeds GitHub push limit)
+# Note: data/cleaned_train_data.csv.zip (24.5MB) is tracked and automatically extracts on run!
+data/cleaned_train_data.csv
+
+# Agent & System Metadata
+.agent/
+.agents/
+.gemini/
+.codex/
+.impeccable/
+skills-lock.json

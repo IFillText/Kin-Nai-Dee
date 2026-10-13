@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kin Nai Dee — Review Rating & Latency Inspector</title>
+  <meta name="description" content="ระบบตรวจสอบความสอดคล้องของการทำนายระดับดาวจากข้อความรีวิวร้านอาหาร (Review Rating Verification) และบันทึกประเมินค่า Inference Latency">
+  <meta name="theme-color" content="#121316">
+  <link rel="icon" type="image/jpeg" href="/static/img/logo_square.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">ข้ามไปยังเนื้อหาหลัก</a>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="main-header" id="main-header">
+      <div class="brand-row">
+        <div class="brand-logo">
+          <div class="logo-mark-wrap" aria-hidden="true">
+            <img src="/static/img/logo_square.jpg" alt="Kin Nai Dee Logo" class="brand-logo-img">
+          </div>
+          <div class="logo-text">
+            <span class="brand-name">Kin Nai Dee <span class="badge-ai">Rating & Latency Inspector</span></span>
+            <span class="brand-sub">ระบบตรวจสอบความสอดคล้องระหว่างข้อความกับระดับดาว และเก็บบันทึก Latency สด</span>
+          </div>
+        </div>
+        <div class="system-status-pills">
+          <div class="status-pill online">
+            <span class="status-dot"></span>
+            <span>BiLSTM (CUDA): Active</span>
+          </div>
+          <div class="status-pill online">
+            <span class="status-dot"></span>
+            <span>LinearSVC: Active</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="main-content">
+      
+      <!-- Presets Bar -->
+      <div class="preset-section">
+        <span class="preset-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="12 8 8 12 12 16 12 8"></polygon>
+          </svg>
+          ตัวอย่างกรณีทดสอบ:
+        </span>
+        <div class="preset-buttons" id="preset-buttons-container">
+          <button type="button" class="preset-chip" data-preset="spicy_street_food_4star">
+            ส้มตำปูปลาร้า [เผ็ดแซ่บ-คุ้มค่า • 4★]
+          </button>
+          <button type="button" class="preset-chip" data-preset="sweet_cafe_dessert_5star">
+            คาเฟ่ขนมหวาน [รสละมุน-บริการดี • 5★]
+          </button>
+          <button type="button" class="preset-chip" data-preset="complaint_service_1star">
+            บริการแย่แต่รสชาติดี [1★]
+          </button>
+          <button type="button" class="preset-chip" data-preset="sarcastic_review_1star">
+            ประชดประชันเจ้าของร้าน [1★]
+          </button>
+          <button type="button" class="preset-chip" data-preset="praise_but_1star_noise">
+            ชมอาหารแต่กดดาวผิด [1★]
+          </button>
+          <button type="button" class="preset-chip" data-preset="authentic_5star">
+            ร้านโปรดประทับใจ [5★]
+          </button>
+          <button type="button" class="preset-chip" data-preset="neutral_fact_3star">
+            รสชาติปานกลางทั่วไป [3★]
+          </button>
+        </div>
+      </div>
+
+      <!-- Inspector Layout -->
+      <div class="inspector-layout">
+        
+        <!-- Input Card -->
+        <div class="card glass-card input-card">
+          <div class="card-header">
+            <span class="card-title">ป้อนข้อมูลรีวิวและระดับดาวที่ระบุ (Input)</span>
+            <span class="char-count" id="char-count">0 ตัวอักษร</span>
+          </div>
+
+          <!-- Review Textarea -->
+          <div class="form-group">
+            <label for="review-input" class="form-label">ข้อความรีวิวร้านอาหาร (ภาษาไทย):</label>
+            <textarea 
+              id="review-input" 
+              class="review-textarea" 
+              rows="5" 
+              placeholder="พิมพ์หรือวางข้อความรีวิวที่นี่... เช่น 'ส้มตำเผ็ดแซ่บจี๊ดถึงใจ พริกสิบเม็ดสะใจมาก ให้เยอะคุ้มราคา แต่รอนานมาก'"
+            ></textarea>
+            <div class="input-feedback" id="input-feedback" role="alert" style="display: none;"></div>
+          </div>
+
+          <!-- Star Rating Input -->
+          <div class="form-group rating-form-group">
+            <label class="form-label">ระดับดาวจริงที่ต้องการตรวจสอบ (Actual Star Rating):</label>
+            <div class="star-rating-selector" id="star-selector" role="radiogroup" aria-label="เลือกระดับดาว 1 ถึง 5">
+              <button type="button" class="star-btn active" data-star="1" id="star-1" aria-label="1 ดาว">
+                <span class="star-symbol">★</span> <span class="star-num">1 ดาว</span>
+              </button>
+              <button type="button" class="star-btn" data-star="2" id="star-2" aria-label="2 ดาว">
+                <span class="star-symbol">★</span> <span class="star-num">2 ดาว</span>
+              </button>
+              <button type="button" class="star-btn" data-star="3" id="star-3" aria-label="3 ดาว">
+                <span class="star-symbol">★</span> <span class="star-num">3 ดาว</span>
+              </button>
+              <button type="button" class="star-btn" data-star="4" id="star-4" aria-label="4 ดาว">
+                <span class="star-symbol">★</span> <span class="star-num">4 ดาว</span>
+              </button>
+              <button type="button" class="star-btn" data-star="5" id="star-5" aria-label="5 ดาว">
+                <span class="star-symbol">★</span> <span class="star-num">5 ดาว</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" id="btn-analyze">
+              <span class="btn-text">ตรวจสอบการทำนาย & วิเคราะห์รสชาติ</span>
+              <span class="btn-icon-bubble" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+              </span>
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-clear">
+              ล้างข้อมูล
+            </button>
+          </div>
+        </div>
+
+        <!-- Result Output Card -->
+        <div class="card glass-card result-card" id="result-container">
+          <div class="card-header">
+            <span class="card-title">ผลการตรวจสอบ (Prediction Output & Latency)</span>
+            <span class="eval-tag" id="status-tag">รอการตรวจสอบ</span>
+          </div>
+
+          <!-- Placeholder Empty State -->
+          <div class="empty-state" id="empty-state">
+            <div class="empty-icon-wrap" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="22" y1="12" x2="18" y2="12"></line>
+                <line x1="6" y1="12" x2="2" y2="12"></line>
+                <line x1="12" y1="6" x2="12" y2="2"></line>
+                <line x1="12" y1="22" x2="12" y2="18"></line>
+              </svg>
+            </div>
+            <h3>พร้อมตรวจสอบความสอดคล้องของดาวและรสชาติ</h3>
+            <p>เลือกเคสตัวอย่างด้านบน หรือพิมพ์ข้อความรีวิวและเลือกดาวจริงเพื่อเริ่มทดสอบ</p>
+          </div>
+
+          <!-- Active Result Content -->
+          <div class="result-body" id="result-body" style="display: none;">
+            
+            <!-- Verdict Status Banner (ทำนายถูก vs ทำนายผิด) -->
+            <div class="verdict-banner" id="verdict-banner">
+              <div class="verdict-indicator" id="verdict-icon">
+                <span class="indicator-bullet"></span>
+              </div>
+              <div class="verdict-info">
+                <div class="verdict-title" id="verdict-title">สถานะความสอดคล้อง</div>
+                <div class="verdict-desc" id="verdict-desc">รายละเอียดการเปรียบเทียบดาวจริงกับดาวที่ทำนาย</div>
+              </div>
+            </div>
+
+            <!-- Taste Profile & Dining Decision Matrix Card -->
+            <div class="decision-matrix-card" id="decision-matrix-card">
+              <div class="decision-matrix-header">
+                <h4 class="decision-title">มิติรสชาติและข้อมูลช่วยตัดสินใจเลือกร้าน (Taste Profile & Decision Factors)</h4>
+                <p class="decision-sub">สรุปมิติรสชาติ ระดับความเผ็ด และปัจจัยประกอบการตัดสินใจจากเนื้อหารีวิว</p>
+              </div>
+
+              <!-- Dining Verdict Callout Box -->
+              <div class="decision-verdict-box" id="decision-verdict-box">
+                <div class="verdict-bubble-label">
+                  <span class="bubble-dot"></span>
+                  บทสรุปคำแนะนำเพื่อการตัดสินใจ:
+                </div>
+                <div class="verdict-bubble-text" id="decision-verdict-text">
+                  กำลังประมวลผลสรุปคำแนะนำ...
+                </div>
+              </div>
+
+              <!-- Taste Meters Grid -->
+              <div class="taste-grid">
+                <div class="taste-meter-card">
+                  <div class="taste-meter-header">
+                    <span class="taste-name">ความเผ็ด (Spiciness)</span>
+                    <span class="taste-badge" id="taste-spicy-val">ไม่ระบุ</span>
+                  </div>
+                  <div class="taste-track">
+                    <div class="taste-fill spicy" id="taste-spicy-bar" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <div class="taste-meter-card">
+                  <div class="taste-meter-header">
+                    <span class="taste-name">ความหวาน (Sweetness)</span>
+                    <span class="taste-badge" id="taste-sweet-val">ไม่ระบุ</span>
+                  </div>
+                  <div class="taste-track">
+                    <div class="taste-fill sweet" id="taste-sweet-bar" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <div class="taste-meter-card">
+                  <div class="taste-meter-header">
+                    <span class="taste-name">ความนัว / เข้มข้น (Savory/Umami)</span>
+                    <span class="taste-badge" id="taste-rich-val">ไม่ระบุ</span>
+                  </div>
+                  <div class="taste-track">
+                    <div class="taste-fill rich" id="taste-rich-bar" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <div class="taste-meter-card">
+                  <div class="taste-meter-header">
+                    <span class="taste-name">ความเปรี้ยว (Sourness)</span>
+                    <span class="taste-badge" id="taste-sour-val">ไม่ระบุ</span>
+                  </div>
+                  <div class="taste-track">
+                    <div class="taste-fill sour" id="taste-sour-bar" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Decision Aspects Grid -->
+              <div class="aspects-grid">
+                <div class="aspect-pill" id="aspect-value-pill">
+                  <span class="aspect-category">ความคุ้มค่า & ราคา:</span>
+                  <span class="aspect-status" id="aspect-value-status">ทั่วไป</span>
+                </div>
+                <div class="aspect-pill" id="aspect-time-pill">
+                  <span class="aspect-category">เวลารอคอย & คิว:</span>
+                  <span class="aspect-status" id="aspect-time-status">ปกติ</span>
+                </div>
+                <div class="aspect-pill" id="aspect-service-pill">
+                  <span class="aspect-category">คุณภาพการบริการ:</span>
+                  <span class="aspect-status" id="aspect-service-status">ตามมาตรฐาน</span>
+                </div>
+                <div class="aspect-pill" id="aspect-place-pill">
+                  <span class="aspect-category">สถานที่ & บรรยากาศ:</span>
+                  <span class="aspect-status" id="aspect-place-status">ทั่วไป</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Models Comparison Grid -->
+            <div class="models-grid">
+              
+              <!-- Proposed BiLSTM Card -->
+              <div class="model-box model-proposed">
+                <div class="model-box-header">
+                  <div class="model-title-wrap">
+                    <span class="badge-type proposed">Proposed Model</span>
+                    <h4>BiLSTM + thai2vec</h4>
+                  </div>
+                  <div class="latency-highlight" id="bilstm-latency-wrap">
+                    <span class="latency-label">Latency:</span>
+                    <span class="latency-value" id="bilstm-latency">0.00 ms</span>
+                  </div>
+                </div>
+                
+                <div class="pred-summary-row">
+                  <div class="pred-col">
+                    <span class="pred-caption">ดาวจริง (Actual)</span>
+                    <div class="star-badge actual" id="actual-star-display">1★</div>
+                  </div>
+                  <div class="vs-divider" aria-hidden="true">→</div>
+                  <div class="pred-col">
+                    <span class="pred-caption">โมเดลทำนาย (Predicted)</span>
+                    <div class="star-badge predicted" id="bilstm-star-display">1★</div>
+                  </div>
+                  <div class="pred-col result-col">
+                    <span class="pred-caption">ผลตรวจ</span>
+                    <div class="match-badge" id="bilstm-match-badge">สอดคล้อง</div>
+                  </div>
+                </div>
+
+                <div class="pred-score" id="bilstm-conf">ความมั่นใจ: 00.0%</div>
+
+                <!-- Probability Distribution Bars -->
+                <div class="prob-section">
+                  <div class="prob-title">การแจกแจงความน่าจะเป็น (Probability 1–5 ดาว):</div>
+                  <div class="prob-bars" id="bilstm-prob-bars"></div>
+                </div>
+              </div>
+
+              <!-- Baseline LinearSVC Card -->
+              <div class="model-box model-baseline">
+                <div class="model-box-header">
+                  <div class="model-title-wrap">
+                    <span class="badge-type baseline">Baseline Model</span>
+                    <h4>LinearSVC + TF-IDF</h4>
+                  </div>
+                  <div class="latency-highlight baseline-lat" id="base-latency-wrap">
+                    <span class="latency-label">Latency:</span>
+                    <span class="latency-value" id="base-latency">0.00 ms</span>
+                  </div>
+                </div>
+
+                <div class="pred-summary-row">
+                  <div class="pred-col">
+                    <span class="pred-caption">ดาวจริง (Actual)</span>
+                    <div class="star-badge actual" id="base-actual-star-display">1★</div>
+                  </div>
+                  <div class="vs-divider" aria-hidden="true">→</div>
+                  <div class="pred-col">
+                    <span class="pred-caption">โมเดลทำนาย (Predicted)</span>
+                    <div class="star-badge predicted" id="base-star-display">3★</div>
+                  </div>
+                  <div class="pred-col result-col">
+                    <span class="pred-caption">ผลตรวจ</span>
+                    <div class="match-badge" id="base-match-badge">ขัดแย้ง</div>
+                  </div>
+                </div>
+
+                <div class="pred-score" id="base-conf">คะแนนสัมพัทธ์: 00.0%</div>
+
+                <!-- Probability Distribution Bars -->
+                <div class="prob-section">
+                  <div class="prob-title">การแจกแจงความน่าจะเป็น (Probability 1–5 ดาว):</div>
+                  <div class="prob-bars" id="base-prob-bars"></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Token Sentiment Breakdown -->
+            <div class="token-breakdown-card">
+              <div class="token-header">
+                <span class="token-title">คำสำคัญเชิงอารมณ์ (Token Sentiment Breakdown):</span>
+                <span class="token-count-badge" id="token-count-badge">0 tokens</span>
+              </div>
+              <div class="tokens-list" id="tokens-list"></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Latency & Inspection History Section -->
+      <section class="history-section">
+        <div class="card glass-card history-card">
+          <div class="history-header">
+            <div>
+              <h2 class="history-title">บันทึกสถิติการทดสอบ & Latency Tracker Log</h2>
+              <p class="history-sub">เก็บบันทึกประวัติการส่งทดสอบแต่ละครั้งเพื่อวัดความถูกต้องและความเร็วในการตอบสนอง</p>
+            </div>
+            <div class="history-actions">
+              <button type="button" class="btn btn-sm btn-secondary" id="btn-clear-history">ล้างประวัติ</button>
+            </div>
+          </div>
+
+          <!-- Latency Summary Metrics -->
+          <div class="latency-metrics-row">
+            <div class="metric-mini-box">
+              <span class="mini-label">จำนวนครั้งที่ทดสอบ</span>
+              <span class="mini-val" id="metric-total-runs">0</span>
+            </div>
+            <div class="metric-mini-box">
+              <span class="mini-label">BiLSTM Accuracy (รอบทดสอบ)</span>
+              <span class="mini-val text-success" id="metric-bilstm-acc">0%</span>
+            </div>
+            <div class="metric-mini-box">
+              <span class="mini-label">BiLSTM Mean Latency</span>
+              <span class="mini-val text-accent" id="metric-bilstm-mean-lat">0.00 ms</span>
+            </div>
+            <div class="metric-mini-box">
+              <span class="mini-label">LinearSVC Mean Latency</span>
+              <span class="mini-val text-info" id="metric-base-mean-lat">0.00 ms</span>
+            </div>
+          </div>
+
+          <!-- History Table -->
+          <div class="table-responsive">
+            <table class="history-table" id="history-table">
+              <thead>
+                <tr>
+                  <th>ลำดับ</th>
+                  <th>ข้อความรีวิว</th>
+                  <th>ดาวจริง</th>
+                  <th>BiLSTM ทาย</th>
+                  <th>BiLSTM ผล</th>
+                  <th>BiLSTM Latency</th>
+                  <th>LinearSVC ทาย</th>
+                  <th>LinearSVC ผล</th>
+                  <th>LinearSVC Latency</th>
+                </tr>
+              </thead>
+              <tbody id="history-tbody">
+                <tr id="empty-history-row">
+                  <td colspan="9" class="text-center text-muted py-4">ยังไม่มีประวัติการทดสอบ — เริ่มทดสอบด้านบนเพื่อบันทึกข้อมูล</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+      <div class="footer-content">
+        <p><strong>Kin Nai Dee</strong> — Review Rating & Latency Inspector</p>
+        <p class="footer-tech">Engine: PyTorch BiLSTM + thai2vec | LinearSVC | PyThaiNLP</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
