@@ -6,6 +6,7 @@
 [![Flask](https://img.shields.io/badge/Flask-3.0+-000000?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3+-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
 [![PyThaiNLP](https://img.shields.io/badge/PyThaiNLP-5.0+-2BA84A)](https://pythainlp.org/)
+[![Google Drive](https://img.shields.io/badge/Google%20Drive-Shared%20Cloud-F4B400?logo=googledrive&logoColor=white)](https://drive.google.com/drive/folders/1j0nJClzLStUz7zNEy5J3Gz94jAfZXwcr?usp=sharing)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Release-v2.0%20(Production%20Ready)-blue.svg)]()
 
@@ -264,7 +265,8 @@ python run_system_eval_and_error_analysis.py
 * **Pattern REcognition and Computational InTElligence Laboratory (PRECITE Lab)**  
   ภาควิชาวิศวกรรมคอมพิวเตอร์ คณะวิศวกรรมศาสตร์ กำแพงแสน มหาวิทยาลัยเกษตรศาสตร์  
   📧 **E-mail:** [seksan.m@ku.th](mailto:seksan.m@ku.th)  
-  🐙 **GitHub Repository:** [IFillText/Kin-Nai-Dee](https://github.com/IFillText/Kin-Nai-Dee)
+  🐙 **GitHub Repository:** [IFillText/Kin-Nai-Dee](https://github.com/IFillText/Kin-Nai-Dee)  
+  ☁️ **Shared Cloud Folder:** [Google Drive (Project Artifacts & Deliverables)](https://drive.google.com/drive/folders/1j0nJClzLStUz7zNEy5J3Gz94jAfZXwcr?usp=sharing)
 
 ### 📚 การอ้างอิงและบรรณานุกรม (References)
 * **Wongnai Challenge Dataset:** Open Review Corpus for Thai NLP Research
