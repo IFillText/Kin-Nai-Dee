@@ -94,10 +94,6 @@ Kin-Nai-Dee/
 │   ├── run_app.bat                     # สคริปต์คลิกเดียวรัน Web Server ทันที
 │   ├── static/                         # Frontend Styling & JavaScript Engine
 │   └── templates/                      # UI Template Dashboard
-├── presentation_script/                # สคริปต์การนำเสนอและคู่มือตอบคำถามกรรมการ
-│   ├── CUE_CARDS.md                    # บัตรคิวสรุปย่อสำหรับถือดูตอนนำเสนอ
-│   ├── QA_DEFENSE_GUIDE.md             # แนวทางการตอบคำถามกรรมการ 6 ข้อสำคัญ
-│   └── SPEAKER_SCRIPT.md               # สคริปต์บทพูดนำเสนอเต็มรูปแบบ 11 สไลด์
 ├── clean_data.py                       # Data Cleansing & Tokenization Pipeline
 ├── train_baseline.py                   # สคริปต์ฝึกสอน Baseline (LinearSVC)
 ├── train_bilstm.py                     # สคริปต์ฝึกสอน Proposed Model (BiLSTM)
