@@ -22,7 +22,7 @@
 6. [การแบ่งชุดข้อมูล (Stratified Data Split)](#6-การแบ่งชุดข้อมูล-stratified-data-split)
 7. [ผลการประเมินและการทดลอง (System Evaluation & Benchmarks)](#7-ผลการประเมินและการทดลอง-system-evaluation--benchmarks)
 8. [คู่มือการติดตั้งและการใช้งาน (Deployment & Running Guide)](#8-คู่มือการติดตั้งและการใช้งาน-deployment--running-guide)
-9. [คณะผู้จัดทำ (Project Credits & Team)](#9-คณะผู้จัดทำ-project-credits--team)
+9. [ข้อมูลการติดต่อและคณะผู้จัดทำ (Contact & Credits)](#9-ข้อมูลการติดต่อและคณะผู้จัดทำ-contact--credits)
 
 ---
 
@@ -253,10 +253,18 @@ python run_system_eval_and_error_analysis.py
 
 ---
 
-## 9. คณะผู้จัดทำ (Project Credits & Team)
+## 9. ข้อมูลการติดต่อและคณะผู้จัดทำ (Contact & Credits)
 
-### 👥 คณะผู้จัดทำโครงงาน (Project Team: INTERGITY)
-* โครงงานพัฒนาขึ้นภายใต้รายวิชา **Pattern Recognition & Machine Learning**
+### 👥 คณะผู้จัดทำ (Project Team: INTERGITY)
+* **ภาควิชาวิศวกรรมคอมพิวเตอร์** คณะวิศวกรรมศาสตร์ กำแพงแสน มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตกำแพงแสน จ.นครปฐม ประเทศไทย  
+  *(Department of Computer Engineering, Faculty of Engineering at Kamphaeng Saen, Kasetsart University, Kamphaeng Saen Campus, Nakhon Pathom, Thailand)*
+
+### 🎓 อาจารย์ที่ปรึกษาและห้องปฏิบัติการวิจัย (Advisor & Lab)
+* **ดร.เสกสรร มธุลาภรังสรรค์ (Dr. Seksan Mathulaprangsan)**
+* **Pattern REcognition and Computational InTElligence Laboratory (PRECITE Lab)**  
+  ภาควิชาวิศวกรรมคอมพิวเตอร์ คณะวิศวกรรมศาสตร์ กำแพงแสน มหาวิทยาลัยเกษตรศาสตร์  
+  📧 **E-mail:** [seksan.m@ku.th](mailto:seksan.m@ku.th)  
+  🐙 **GitHub Repository:** [IFillText/Kin-Nai-Dee](https://github.com/IFillText/Kin-Nai-Dee)
 
 ### 📚 การอ้างอิงและบรรณานุกรม (References)
 * **Wongnai Challenge Dataset:** Open Review Corpus for Thai NLP Research
